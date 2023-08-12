@@ -16,7 +16,7 @@ function App() {
             console.log(prevNumber) // ПРЕДЫДУЩЕЕ ЗНАЧЕНИЕ. по умолчанию null
             console.log(display) // ВВЕДЕННОЕ ЗНАЧЕНИЕ. по умолчанию '0'
             console.log(operator) // ОПЕРАТОР по умолчанию null
-            console.log(setNowOperator)
+            console.log(nowOperator)
 
             
 
@@ -66,7 +66,7 @@ function App() {
                     if (nowOperator === '*'){
                       setDisplay(num1 * num2)
                     }
-                    if (nowOperator=== '/'){
+                    if (nowOperator === '/'){
                       setDisplay(num1 / num2)
                     }
                 
