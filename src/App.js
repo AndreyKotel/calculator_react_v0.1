@@ -5,18 +5,18 @@ import Button from './Components/Button';
 
 function App() {
 
-            const [calc, setCalc] = useState("0");
+            const [display, setDisplay] = useState("0");
             const [prevNumber, setPrevNumber] = useState(null);
             const [operator, setOperator] = useState(null); /* получается есть на оператор два состояния, этот используется для отдельного вывода оператора и числа. ключевой момент что
             происходит обнуление в функции handleNumberClick - setOperator(null), поэтому вынужден был создать второе состояние для оператора чтобы он подлавливался в арифметике.*/
-            const [nowOp, setNowOp] = useState('') // второй оператор состояния. для handleEqualClick(), чтобы она ловила последний знак. 
+            const [nowOperator, setNowOperator] = useState('') // второй оператор состояния. для handleEqualClick(), чтобы она ловила последний знак. 
             
             
 
             console.log(prevNumber) // ПРЕДЫДУЩЕЕ ЗНАЧЕНИЕ. по умолчанию null
-            console.log(calc) // ВВЕДЕННОЕ ЗНАЧЕНИЕ. по умолчанию '0'
+            console.log(display) // ВВЕДЕННОЕ ЗНАЧЕНИЕ. по умолчанию '0'
             console.log(operator) // ОПЕРАТОР по умолчанию null
-            console.log(nowOp)
+            console.log(setNowOperator)
 
             
 
@@ -24,11 +24,11 @@ function App() {
             const handleNumberClick = value => { // ФУНКЦИЯ НАЖАТИЯ НА ЧИСЛО
           
           
-                    if (calc === '0' || operator ) { // эта логика, чтобы отделить вывод на экран число и оператор и чтобы не прилипал дефолтный 0 к введеному числу
-                    setCalc(value);
+                    if (display === '0' || operator ) { // эта логика, чтобы отделить вывод на экран число и оператор и чтобы не прилипал дефолтный 0 к введеному числу
+                    setDisplay(value);
                     setOperator(null) //важно. если убрать эту строчку, то после оператора не могу вводить числа нормально больше однозначных, тк не будет видеть разницы между оператором и числом
                     } else {
-                    setCalc(calc + value); 
+                    setDisplay(display + value); 
                     }
                            
                       
@@ -37,17 +37,17 @@ function App() {
             
             const handleOperatorClick = (selectedOperator) => { // ФУНКЦИЯ НАЖАТИЯ НА ОПЕРАТОР
                     
-                    setPrevNumber(calc) // предыдущее число уходит в отдельный стейт
+                    setPrevNumber(display) // предыдущее число уходит в отдельный стейт
                     setOperator(selectedOperator);
-                    setNowOp(selectedOperator) //второй стейт для оператора, чтобы ловился оператор в функции арифм.расчетов
+                    setNowOperator(selectedOperator) //второй стейт для оператора, чтобы ловился оператор в функции арифм.расчетов
 
                       
               }
               
 
             const handleDecimalPointClick = (PointClick) => { // ОТДЕЛЬНО ЛОГИКА НА ПЛАВАЮЩУЮ ЗАПЯТУЮ
-                    if (!calc.includes(PointClick)) {
-                    setCalc(calc + PointClick);
+                    if (!display.includes(PointClick)) {
+                    setDisplay(display + PointClick);
                     }
               }
 
@@ -56,18 +56,18 @@ function App() {
               const handleEqualClick = () => { // ФУНКЦИЯ РЕАЛИЗАЦИИ АРИФМЕТИЧЕСКИХ ДЕЙСТВИЙ. КНОПКА '='.
 
                     const num1 = parseFloat(prevNumber); 
-                    const num2 = parseFloat(calc);
-                    if (nowOp === '+'){
-                      setCalc(num1 + num2)
+                    const num2 = parseFloat(display);
+                    if (nowOperator === '+'){
+                      setDisplay(num1 + num2)
                     }
-                    if (nowOp === '-'){
-                      setCalc(num1 - num2)
+                    if (nowOperator === '-'){
+                      setDisplay(num1 - num2)
                     }
-                    if (nowOp === '*'){
-                      setCalc(num1 * num2)
+                    if (nowOperator === '*'){
+                      setDisplay(num1 * num2)
                     }
-                    if (nowOp === '/'){
-                      setCalc(num1 / num2)
+                    if (nowOperator=== '/'){
+                      setDisplay(num1 / num2)
                     }
                 
               }
@@ -94,7 +94,7 @@ function App() {
 
                             <div className="display">
                           
-                              {calc || "0"} {/*стартовый ноль на экране */}
+                              {display || "0"} {/*стартовый ноль на экране */}
                             </div>
 
                                       <div className="operators">
