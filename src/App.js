@@ -58,16 +58,16 @@ function App() {
                     const num1 = parseFloat(prevNumber); 
                     const num2 = parseFloat(display);
                     if (nowOperator === '+'){
-                      setDisplay(num1 + num2)
+                      setDisplay((num1 + num2).toString())
                     }
                     if (nowOperator === '-'){
-                      setDisplay(num1 - num2)
+                      setDisplay((num1 - num2).toString())
                     }
                     if (nowOperator === '*'){
-                      setDisplay(num1 * num2)
+                      setDisplay((num1 * num2).toString())
                     }
                     if (nowOperator === '/'){
-                      setDisplay(num1 / num2)
+                      setDisplay((num1 / num2).toString())
                     }
                 
               }
