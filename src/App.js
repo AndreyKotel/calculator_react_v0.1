@@ -55,21 +55,29 @@ function App() {
 
               const handleEqualClick = () => { // ФУНКЦИЯ РЕАЛИЗАЦИИ АРИФМЕТИЧЕСКИХ ДЕЙСТВИЙ. КНОПКА '='.
 
-                    const num1 = parseFloat(prevNumber); 
-                    const num2 = parseFloat(display);
-                    if (nowOperator === '+'){
-                      setDisplay((num1 + num2).toString())
+
+                    if (display != '0'){
+                      setDisplay(calculate())
+                      
                     }
-                    if (nowOperator === '-'){
-                      setDisplay((num1 - num2).toString())
-                    }
-                    if (nowOperator === '*'){
-                      setDisplay((num1 * num2).toString())
-                    }
-                    if (nowOperator === '/'){
-                      setDisplay((num1 / num2).toString())
-                    }
-                
+              }
+
+
+              const calculate = () => {
+                const num1 = parseFloat(prevNumber); 
+                const num2 = parseFloat(display);
+                if (nowOperator === '+'){
+                  return((num1 + num2).toString())
+                }
+                if (nowOperator === '-'){
+                  return((num1 - num2).toString())
+                }
+                if (nowOperator === '*'){
+                  return((num1 * num2).toString())
+                }
+                if (nowOperator === '/'){
+                  return((num1 / num2).toString())
+                }
               }
             
 
