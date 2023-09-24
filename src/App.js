@@ -1,171 +1,141 @@
-import React, {useState} from 'react';
-import Button from './Components/Button';
-
-
+import React, { useState } from "react";
 
 function App() {
-  const [display, setDisplay] = useState("0");
+  const [display, setDisplay] = useState(0);
   const [prevNumber, setPrevNumber] = useState(null);
-  const [operator, setOperator] = useState(null); 
-    const [nowOperator, setNowOperator] = useState('') 
-  
-  
+  const [operator, setOperator] = useState(null);
+  const [nowOperator, setNowOperator] = useState("");
+  const [data, setData] = useState([]); // состояние. входной массив
 
-    
-        const [data, setData] = useState([]); // состояние. входной массив
-        console.log(data)
+  const joinOperands = (data) => {
+    let num1 = []; // "склеиваю" первое число
+    let num2 = []; // "склеиваю" второе число
+    let oper = null; // оператор
 
-        let num1 = []; // "склеиваю" первое число
-        let num2 = [] // "склеиваю" второе число
-        let oper = null; // оператор
+    for (let i = 0; i < data.length; i++) {
+      if (oper == null && typeof data[i] === "number") {
+        // num1
+        num1.push(data[i]);
+      }
+      if (
+        data[i] === "+" ||
+        data[i] === "-" ||
+        data[i] === "/" ||
+        data[i] === "*"
+      ) {
+        // oper
+        oper = data[i];
+      }
+      if (oper !== null && num1.length !== 0 && typeof (data[i] === "number")) {
+        // num2
+        num2.push(data[i]);
+      }
+      // тут дописать надо реализацию рассчета. когда num1,num2 .length !==0 ,  oper !== null, то если элемент !== number и !== '.', то num1 num2 вычисляются и результат обновляется в num1
+    }
 
+    let firstNumOut = +num1.join(""); // это получаю переменную. в консоль логе все ок.
+    console.log(firstNumOut);
 
-        for (let i = 0; i < data.length; i++){
-          if (oper == null && typeof(data[i]) === 'number'){ // num1
-            num1.push(data[i])
-          }
-          if (data[i] === '+' || data[i] === '-' || data[i] === '/' || data[i] === '*') { // oper
-              oper = data[i]
-              }
-          if (oper !== null && num1.length !== 0 && typeof(data[i] === 'number')){ // num2
-            num2.push(data[i])
-          }
-          // тут дописать надо реализацию рассчета. когда num1,num2 .length !==0 ,  oper !== null, то если элемент !== number и !== '.', то num1 num2 вычисляются и результат обновляется в num1
-      
-          
-        }           
+    let secondNumOut = +num2.join("");
 
+    return [firstNumOut, secondNumOut];
+  };
 
-          let firstNumOut = +num1.join('') // это получаю переменную. в консоль логе все ок.
-          console.log(firstNumOut)
-      
-          let secondNumOut = +num2.join('')
+  const handleNumberClick = (value) => {
+    // при нажатии на кнопки все уходит в массив data.
+    const newData = [...data, value];
+    setData(newData);
+    const [firstNumOut] = joinOperands(newData);
 
+    setDisplay(firstNumOut); // пытаюсь переменную в стейт вывести на дисплей. первое нажатие пропускает
+  };
 
-
-
-        
-          const handleNumberClick = value => { // при нажатии на кнопки все уходит в массив data.
-          const newData = [...data, value];
-          setData(newData);
-
-          setDisplay(firstNumOut) // пытаюсь переменную в стейт вывести на дисплей. первое нажатие пропускает
-                              
-        }
-                          
-        
-        /* ________________________________________________________________________________________
+  /* ________________________________________________________________________________________
         все что ниже это старое, вся суть сверху пока */
-        
-        const handleOperatorClick = (selectedOperator) => { // ФУНКЦИЯ НАЖАТИЯ НА ОПЕРАТОР
-                
-                setPrevNumber(display) // предыдущее число уходит в отдельный стейт
-                setOperator(selectedOperator);
-                setNowOperator(selectedOperator) //второй стейт для оператора, чтобы ловился оператор в функции арифм.расчетов
 
-                
-                  
-          }
-          
+  const handleOperatorClick = (selectedOperator) => {
+    // ФУНКЦИЯ НАЖАТИЯ НА ОПЕРАТОР
 
-        const handleDecimalPointClick = (PointClick) => { // ОТДЕЛЬНО ЛОГИКА НА ПЛАВАЮЩУЮ ЗАПЯТУЮ
-                if (!display.includes(PointClick)) {
-                setDisplay(display + PointClick);
-                }
-          }
+    setPrevNumber(display); // предыдущее число уходит в отдельный стейт
+    setOperator(selectedOperator);
+    setNowOperator(selectedOperator); //второй стейт для оператора, чтобы ловился оператор в функции арифм.расчетов
+  };
 
+  const handleDecimalPointClick = (PointClick) => {
+    // ОТДЕЛЬНО ЛОГИКА НА ПЛАВАЮЩУЮ ЗАПЯТУЮ
+    if (!display.includes(PointClick)) {
+      setDisplay(display + PointClick);
+    }
+  };
 
+  const handleEqualClick = () => {
+    // ФУНКЦИЯ РЕАЛИЗАЦИИ АРИФМЕТИЧЕСКИХ ДЕЙСТВИЙ. КНОПКА '='.
 
-          const handleEqualClick = () => { // ФУНКЦИЯ РЕАЛИЗАЦИИ АРИФМЕТИЧЕСКИХ ДЕЙСТВИЙ. КНОПКА '='.
+    if (display != "0") {
+      setDisplay(calculate());
+    }
+  };
 
+  const calculate = () => {
+    const num1 = parseFloat(prevNumber);
+    const num2 = parseFloat(display);
+    if (nowOperator === "+") {
+      return (num1 + num2).toString();
+    }
+    if (nowOperator === "-") {
+      return (num1 - num2).toString();
+    }
+    if (nowOperator === "*") {
+      return (num1 * num2).toString();
+    }
+    if (nowOperator === "/") {
+      return (num1 / num2).toString();
+    }
+  };
 
-                if (display != '0'){
-                  setDisplay(calculate())
-                  
-                }
-          }
+  const createDigits = () => {
+    // ГЕНЕРАЦИЯ КНОПОК С ЧИСЛАМИ
+    const digit = [];
 
+    for (let i = 1; i < 10; i++) {
+      digit.push(<button onClick={() => handleNumberClick(i)}> {i} </button>);
+    }
 
-          const calculate = () => {
-            const num1 = parseFloat(prevNumber); 
-            const num2 = parseFloat(display);
-            if (nowOperator === '+'){
-              return((num1 + num2).toString())
-            }
-            if (nowOperator === '-'){
-              return((num1 - num2).toString())
-            }
-            if (nowOperator === '*'){
-              return((num1 * num2).toString())
-            }
-            if (nowOperator === '/'){
-              return((num1 / num2).toString())
-            }
-          }
-        
+    return digit;
+  };
 
-        const createDigits = () => { // ГЕНЕРАЦИЯ КНОПОК С ЧИСЛАМИ
-            const digit = [];
-
-              for(let i = 1; i < 10; i++ ){
-                  digit.push(
-                  <button onClick={() => handleNumberClick(i)} > {i} </button>
-                )
-              }
-              
-                  return digit 
-        }
-  
+  React.useEffect(() => {
+    console.log("current display: ", display);
+  }, [display]);
 
   /*________________________________________________________________________________________ */
 
-          return (
-            <div className="App">
-              <div className="calculator">
+  return (
+    <div className="App">
+      <div className="calculator">
+        <div className="display">
+          {display} {/*стартовый ноль на экране */}
+        </div>
 
-                  <div className="display">
-                
-                    {display || "0"} {/*стартовый ноль на экране */}
-                  </div>
+        <div className="operators">
+          <button onClick={() => handleOperatorClick("/")}>/</button>
+          <button onClick={() => handleOperatorClick("*")}>*</button>
+          <button onClick={() => handleOperatorClick("+")}>+</button>
+          <button onClick={() => handleOperatorClick("-")}>-</button>
+          {/* <button> DEL </button> */}
+        </div>
 
-                            <div className="operators">
-                            
-                              <button onClick={() => handleOperatorClick('/')}>/ 
-                              </button>
-                              <button onClick={() => handleOperatorClick('*')}>*
-                              </button>
-                              <button onClick={() => handleOperatorClick('+')}>+
-                              </button>
-                              <button onClick={() => handleOperatorClick('-')}>-
-                              </button>
-                            {/* <button> DEL </button> */}
-
-                          </div>
-
-                  <div className="digits">
-                    {createDigits()} 
-                    <button onClick={() => handleNumberClick('0')}>0</button>
-                    <button onClick={() => handleDecimalPointClick('.')}>.</button>
-                   <button onClick={handleEqualClick}>=</button> 
-
-           
-    
-            </div>
-
-
-          </div>
-                                  
-          </div>
-              
-            
-          );
-
-
-
-
+        <div className="digits">
+          {createDigits()}
+          <button onClick={() => handleNumberClick("0")}>0</button>
+          <button onClick={() => handleDecimalPointClick(".")}>.</button>
+          <button onClick={handleEqualClick}>=</button>
+        </div>
+      </div>
+    </div>
+  );
 }
 export default App;
-
 
 /*
 
@@ -175,8 +145,3 @@ export default App;
 где изменяем значение. 
 при изменении состояния компонента реакт понимает что произошли изменения
 и перерисовывет компонент */
-
-
-
-
-
