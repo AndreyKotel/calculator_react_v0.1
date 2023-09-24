@@ -4,145 +4,168 @@ import Button from './Components/Button';
 
 
 function App() {
+  const [display, setDisplay] = useState("0");
+  const [prevNumber, setPrevNumber] = useState(null);
+  const [operator, setOperator] = useState(null); 
+    const [nowOperator, setNowOperator] = useState('') 
+  
+  
 
-            const [display, setDisplay] = useState("0");
-            const [prevNumber, setPrevNumber] = useState(null);
-            const [operator, setOperator] = useState(null); /* получается есть на оператор два состояния, этот используется для отдельного вывода оператора и числа. ключевой момент что
-            происходит обнуление в функции handleNumberClick - setOperator(null), поэтому вынужден был создать второе состояние для оператора чтобы он подлавливался в арифметике.*/
-            const [nowOperator, setNowOperator] = useState('') // второй оператор состояния. для handleEqualClick(), чтобы она ловила последний знак. 
-            
-            
+    
+        const [data, setData] = useState([]); // состояние. входной массив
+        console.log(data)
 
-            console.log(prevNumber) // ПРЕДЫДУЩЕЕ ЗНАЧЕНИЕ. по умолчанию null
-            console.log(display) // ВВЕДЕННОЕ ЗНАЧЕНИЕ. по умолчанию '0'
-            console.log(operator) // ОПЕРАТОР по умолчанию null
-            console.log(nowOperator)
+        let num1 = []; // "склеиваю" первое число
+        let num2 = [] // "склеиваю" второе число
+        let oper = null; // оператор
 
-            
 
-            
-            const handleNumberClick = value => { // ФУНКЦИЯ НАЖАТИЯ НА ЧИСЛО
+        for (let i = 0; i < data.length; i++){
+          if (oper == null && typeof(data[i]) === 'number'){ // num1
+            num1.push(data[i])
+          }
+          if (data[i] === '+' || data[i] === '-' || data[i] === '/' || data[i] === '*') { // oper
+              oper = data[i]
+              }
+          if (oper !== null && num1.length !== 0 && typeof(data[i] === 'number')){ // num2
+            num2.push(data[i])
+          }
+          // тут дописать надо реализацию рассчета. когда num1,num2 .length !==0 ,  oper !== null, то если элемент !== number и !== '.', то num1 num2 вычисляются и результат обновляется в num1
+      
           
-          
-                    if (display === '0' || operator ) { // эта логика, чтобы отделить вывод на экран число и оператор и чтобы не прилипал дефолтный 0 к введеному числу
-                    setDisplay(value);
-                    setOperator(null) //важно. если убрать эту строчку, то после оператора не могу вводить числа нормально больше однозначных, тк не будет видеть разницы между оператором и числом
-                    } else {
-                    setDisplay(display + value); 
-                    }
-                           
-                      
-            }
-                                    
-            
-            const handleOperatorClick = (selectedOperator) => { // ФУНКЦИЯ НАЖАТИЯ НА ОПЕРАТОР
-                    
-                    setPrevNumber(display) // предыдущее число уходит в отдельный стейт
-                    setOperator(selectedOperator);
-                    setNowOperator(selectedOperator) //второй стейт для оператора, чтобы ловился оператор в функции арифм.расчетов
+        }           
 
-                      
-              }
-              
 
-            const handleDecimalPointClick = (PointClick) => { // ОТДЕЛЬНО ЛОГИКА НА ПЛАВАЮЩУЮ ЗАПЯТУЮ
-                    if (!display.includes(PointClick)) {
-                    setDisplay(display + PointClick);
-                    }
-              }
+          let firstNumOut = +num1.join('') // это получаю переменную. в консоль логе все ок.
+          console.log(firstNumOut)
+      
+          let secondNumOut = +num2.join('')
 
 
 
-              const handleEqualClick = () => { // ФУНКЦИЯ РЕАЛИЗАЦИИ АРИФМЕТИЧЕСКИХ ДЕЙСТВИЙ. КНОПКА '='.
 
+        
+          const handleNumberClick = value => { // при нажатии на кнопки все уходит в массив data.
+          const newData = [...data, value];
+          setData(newData);
 
-                    if (display != '0'){
-                      setDisplay(calculate())
-                      
-                    }
-              }
-
-
-              const calculate = () => {
-                const num1 = parseFloat(prevNumber); 
-                const num2 = parseFloat(display);
-                if (nowOperator === '+'){
-                  return((num1 + num2).toString())
-                }
-                if (nowOperator === '-'){
-                  return((num1 - num2).toString())
-                }
-                if (nowOperator === '*'){
-                  return((num1 * num2).toString())
-                }
-                if (nowOperator === '/'){
-                  return((num1 / num2).toString())
-                }
-              }
-            
-
-            const createDigits = () => { // ГЕНЕРАЦИЯ КНОПОК С ЧИСЛАМИ
-                 const digit = [];
-
-                  for(let i = 1; i < 10; i++ ){
-                      digit.push(
-                      <button onClick={() => handleNumberClick(i.toString())} > {i} </button>
-                     )
-                  }
-                  
-                      return digit 
-            }
-            
-         
-            /*________________________________________________________________________________________ */
-
-                    return (
-                      <div className="App">
-                        <div className="calculator">
-
-                            <div className="display">
+          setDisplay(firstNumOut) // пытаюсь переменную в стейт вывести на дисплей. первое нажатие пропускает
+                              
+        }
                           
-                              {display || "0"} {/*стартовый ноль на экране */}
-                            </div>
+        
+        /* ________________________________________________________________________________________
+        все что ниже это старое, вся суть сверху пока */
+        
+        const handleOperatorClick = (selectedOperator) => { // ФУНКЦИЯ НАЖАТИЯ НА ОПЕРАТОР
+                
+                setPrevNumber(display) // предыдущее число уходит в отдельный стейт
+                setOperator(selectedOperator);
+                setNowOperator(selectedOperator) //второй стейт для оператора, чтобы ловился оператор в функции арифм.расчетов
 
-                                      <div className="operators">
-                                      
-                                        <button onClick={() => handleOperatorClick('/')}>/ 
-                                        </button>
-                                        <button onClick={() => handleOperatorClick('*')}>*
-                                        </button>
-                                        <button onClick={() => handleOperatorClick('+')}>+
-                                        </button>
-                                        <button onClick={() => handleOperatorClick('-')}>-
-                                        </button>
-                                      {/* <button> DEL </button> */}
+                
+                  
+          }
+          
 
-                                    </div>
+        const handleDecimalPointClick = (PointClick) => { // ОТДЕЛЬНО ЛОГИКА НА ПЛАВАЮЩУЮ ЗАПЯТУЮ
+                if (!display.includes(PointClick)) {
+                setDisplay(display + PointClick);
+                }
+          }
 
-                            <div className="digits">
-                              {createDigits()} 
-                              <button onClick={() => handleNumberClick('0')}>0</button>
-                              <button onClick={() => handleDecimalPointClick('.')}>.</button>
-                             <button onClick={handleEqualClick}>=</button> 
 
-                     
+
+          const handleEqualClick = () => { // ФУНКЦИЯ РЕАЛИЗАЦИИ АРИФМЕТИЧЕСКИХ ДЕЙСТВИЙ. КНОПКА '='.
+
+
+                if (display != '0'){
+                  setDisplay(calculate())
+                  
+                }
+          }
+
+
+          const calculate = () => {
+            const num1 = parseFloat(prevNumber); 
+            const num2 = parseFloat(display);
+            if (nowOperator === '+'){
+              return((num1 + num2).toString())
+            }
+            if (nowOperator === '-'){
+              return((num1 - num2).toString())
+            }
+            if (nowOperator === '*'){
+              return((num1 * num2).toString())
+            }
+            if (nowOperator === '/'){
+              return((num1 / num2).toString())
+            }
+          }
+        
+
+        const createDigits = () => { // ГЕНЕРАЦИЯ КНОПОК С ЧИСЛАМИ
+            const digit = [];
+
+              for(let i = 1; i < 10; i++ ){
+                  digit.push(
+                  <button onClick={() => handleNumberClick(i)} > {i} </button>
+                )
+              }
               
-                      </div>
+                  return digit 
+        }
+  
+
+  /*________________________________________________________________________________________ */
+
+          return (
+            <div className="App">
+              <div className="calculator">
+
+                  <div className="display">
+                
+                    {display || "0"} {/*стартовый ноль на экране */}
+                  </div>
+
+                            <div className="operators">
+                            
+                              <button onClick={() => handleOperatorClick('/')}>/ 
+                              </button>
+                              <button onClick={() => handleOperatorClick('*')}>*
+                              </button>
+                              <button onClick={() => handleOperatorClick('+')}>+
+                              </button>
+                              <button onClick={() => handleOperatorClick('-')}>-
+                              </button>
+                            {/* <button> DEL </button> */}
+
+                          </div>
+
+                  <div className="digits">
+                    {createDigits()} 
+                    <button onClick={() => handleNumberClick('0')}>0</button>
+                    <button onClick={() => handleDecimalPointClick('.')}>.</button>
+                   <button onClick={handleEqualClick}>=</button> 
+
+           
+    
+            </div>
 
 
-                    </div>
-                                            
-                    </div>
-                        
-                      
-                    );
+          </div>
+                                  
+          </div>
+              
+            
+          );
 
 
 
 
 }
-
 export default App;
+
 
 /*
 
