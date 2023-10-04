@@ -1,18 +1,13 @@
 import React, { useState } from "react";
 
-
-
 function App() {
   const [display, setDisplay] = useState(0);
   const [prevNumber, setPrevNumber] = useState(null);
   const [operator, setOperator] = useState(null);
   const [nowOperator, setNowOperator] = useState("");
   const [data, setData] = useState([]); // состояние. входной массив
- console.log('массив входных данных', data)
+  console.log("массив входных данных", data);
 
-
- 
-  
   /* В общем, массив входных данных data я вывел в консоль для наглядности. также num1 и num2 вывел в консоль для нагоядности
    В массив data летят все кнопки. 
   Далее есть функция middleWare, в которой вся суть. Массив оптимизируется и вычисляется результат.
@@ -29,148 +24,110 @@ function App() {
 
    */
 
-    
   const middleWare = (data) => {
-    
-        let num1 = []; // получаю первое число  
-        let num2 = []; // получаю второе число
-        let oper = null; // оператор
-      
-          
-        /* 
-        */
-     
+    let num1 = []; // получаю первое число
+    let num2 = []; // получаю второе число
+    let oper = null; // оператор
 
-            for (let i = 0; i < data.length; i++) {
-              if (oper == null && typeof data[i] === "number") {
-                // num1
-                num1.push(data[i]);
-              }
-              if (
-                data[i] === "+" ||
-                data[i] === "-" ||
-                data[i] === "/" ||
-                data[i] === "*"
-              ) {
-                // oper
-                oper = data[i];
-              }
-              if (oper !== null && num1.length !== 0 && typeof data[i] === "number") {
-                // num2
-                num2.push(data[i]);
-              }
+    /*
+     */
 
-              
+    for (let i = 0; i < data.length; i++) {
+      if (oper == null && typeof data[i] === "number") {
+        // num1
+        num1.push(data[i]);
+      }
+      if (
+        data[i] === "+" ||
+        data[i] === "-" ||
+        data[i] === "/" ||
+        data[i] === "*"
+      ) {
+        // oper
+        oper = data[i];
+      }
+      if (oper !== null && num1.length !== 0 && typeof data[i] === "number") {
+        // num2
+        num2.push(data[i]);
+      }
 
-              if (data[i] === '.' && !num1.includes('.') && num1.length !== 0){ 
-                num1.push('.')
-              }
-              if (data[i] === '.' && !num2.includes('.') && num2.length !== 0){
-                num2.push('.')
-              }
+      if (data[i] === "." && !num1.includes(".") && num1.length !== 0) {
+        num1.push(".");
+      }
+      if (data[i] === "." && !num2.includes(".") && num2.length !== 0) {
+        num2.push(".");
+      }
 
-
-
-
-
-
-              /*
+      /*
               if (data[i] === '.' && !num1.includes('.') && !num1.includes('0.')){
                 num1.push('0.')
               } 
               */
+    }
 
-              
-              
-            }
-    
-        let firstNumOut = num1.join(""); // это получаю переменную. в консоль логе все ок.
-       console.log(firstNumOut);
+    let firstNumOut = num1.join(""); // это получаю переменную. в консоль логе все ок.
+    console.log(firstNumOut);
 
-        let secondNumOut = num2.join("");
-       console.log(secondNumOut);
+    let secondNumOut = num2.join("");
+    console.log(secondNumOut);
 
-        let hiddenResult = null;
-     
+    let hiddenResult = null;
 
+    if (oper === "+") {
+      hiddenResult = +firstNumOut + +secondNumOut;
+    }
+    if (oper === "-") {
+      hiddenResult = +firstNumOut - +secondNumOut;
+    }
+    if (oper === "*") {
+      hiddenResult = +firstNumOut * +secondNumOut;
+    }
+    if (oper === "/") {
+      hiddenResult = +firstNumOut / +secondNumOut;
+    }
 
-                if (oper === '+' ){
-                  hiddenResult = (+firstNumOut) + (+secondNumOut) 
-                }
-                if (oper === '-' ){
-                  hiddenResult = (+firstNumOut) - (+secondNumOut)
-                }
-                if (oper === '*' ){
-                  hiddenResult = (+firstNumOut) * (+secondNumOut)
-                }
-                if (oper === '/' ){
-                  hiddenResult = (+firstNumOut) / (+secondNumOut)
-                }
-
-              
-                console.log(hiddenResult)
-                
-            
-
-
-         
-        
-        return [firstNumOut, secondNumOut, hiddenResult, num1, num2, oper];
-        
+    return [firstNumOut, secondNumOut, hiddenResult, num1, num2, oper];
   };
 
+  const handleNumberClick = (value) => {
+    // при нажатии на кнопки все уходит в массив data.
+    const newData = [...data, value];
+    setData([...newData]);
+    let [firstNumOut, secondNumOut, hiddenResult, num1, num2, oper] =
+      middleWare(newData);
 
+    if (secondNumOut === "") {
+      setDisplay(firstNumOut);
+    }
+    if (secondNumOut !== "") {
+      setDisplay(secondNumOut);
+    }
+  };
 
+  const handleOperatorClick = (selectedOperator) => {
+    const newData = [...data, selectedOperator];
 
-        const handleNumberClick = (value) => {
-          
-                // при нажатии на кнопки все уходит в массив data.
-                const newData = [...data, value];
-                setData(newData);
-                let [firstNumOut, secondNumOut, hiddenResult, num1, num2, oper] = middleWare(newData);
-               
+    let [firstNumOut, secondNumOut, hiddenResult, num1, num2, oper] =
+      middleWare(newData); // !!! firstNumOut, secondNumOut здесь не должны быть удалены
 
-                if (secondNumOut === '') {
-                  setDisplay(firstNumOut); 
-                }
-                if (secondNumOut !== ''){
-                  setDisplay(secondNumOut)
-                  setData([hiddenResult]) 
-                 
-                }
-                
-               
-                
-
-                
-        };               
-        
-
-
-        
-
-
-        const handleOperatorClick = (selectedOperator) => {
-
-              const newData = [...data, selectedOperator];
-             let [firstNumOut, secondNumOut, hiddenResult, num1, num2, oper] = middleWare(newData); // !!! firstNumOut, secondNumOut здесь не должны быть удалены 
-/*
+    if (secondNumOut) {
+      const newData = handleEqualClick("=");
+      setData([newData, selectedOperator]);
+      return;
+    }
+    /*
               if (data.length === 0) {
                     setData(newData);
                     setDisplay(selectedOperator);
               }
 */
-           
-              if (data.length !== 0 && selectedOperator !== data[data.length - 1]  ) {
-                   
-                    setData(newData);
-                    setDisplay(selectedOperator);
-                    
-                    
 
-              }
-              
-             /*  
+    if (data.length !== 0 && selectedOperator !== data[data.length - 1]) {
+      setData(newData);
+      setDisplay(selectedOperator);
+    }
+
+    /*  
              
               if (data.includes('*') || data.includes('/') || data.includes('+') || data.includes('-') ) {
                 setData([hiddenResult])
@@ -180,11 +137,9 @@ function App() {
               }
 
               */
-    };
-      
-                    
+  };
 
-/*
+  /*
 это ненужно
           if(selectedOperator !== data[data.length - 1] ){ 
                                                           
@@ -201,87 +156,83 @@ function App() {
           }
 */
 
-   
-       
+  const handleDecimalPointClick = (PointClick) => {};
 
+  const resetData = (res) => {
+    setOperator(null);
+    setData([res]);
+    setPrevNumber(null);
+    setNowOperator(null);
+  };
 
+  const handleEqualClick = (equalArg) => {
+    const newData = [...data, equalArg];
+    setDisplay(middleWare(newData)[2]);
+    resetData(middleWare(newData)[2]);
 
-      
-        const handleDecimalPointClick = (PointClick) => {
-          
+    return middleWare(newData)[2];
+  };
 
-        };
-      
-        const handleEqualClick = (equalArg) => {
-          
-          const newData = [...data, equalArg];
-          setData(newData);
-        
+  const calculate = () => {
+    const num1 = parseFloat(prevNumber);
+    const num2 = parseFloat(display);
+    if (nowOperator === "+") {
+      return (num1 + num2).toString();
+    }
+    if (nowOperator === "-") {
+      return (num1 - num2).toString();
+    }
+    if (nowOperator === "*") {
+      return (num1 * num2).toString();
+    }
+    if (nowOperator === "/") {
+      return (num1 / num2).toString();
+    }
+  };
 
-        };
-        
-        const calculate = () => {
-          const num1 = parseFloat(prevNumber);
-          const num2 = parseFloat(display);
-          if (nowOperator === "+") {
-            return (num1 + num2).toString();
-          }
-          if (nowOperator === "-") {
-            return (num1 - num2).toString();
-          }
-          if (nowOperator === "*") {
-            return (num1 * num2).toString();
-          }
-          if (nowOperator === "/") {
-            return (num1 / num2).toString();
-          }
-        };
-      
-        const createDigits = () => {
-          // ГЕНЕРАЦИЯ КНОПОК С ЧИСЛАМИ
-          const digit = [];
-      
-          for (let i = 1; i < 10; i++) {
-            digit.push(<button onClick={() => handleNumberClick(i)}> {i} </button>);
-          }
-      
-          return digit;
-        };
-      
-        /*React.useEffect(() => {
-          console.log("current display: ", display);
-        }, [display]);
-      */
-  
-        
+  const createDigits = () => {
+    // ГЕНЕРАЦИЯ КНОПОК С ЧИСЛАМИ
+    const digit = [];
+
+    for (let i = 1; i < 10; i++) {
+      digit.push(<button onClick={() => handleNumberClick(i)}> {i} </button>);
+    }
+
+    return digit;
+  };
+
+  React.useEffect(() => {
+    console.log("current data: ", data);
+  }, [data]);
+
   /*________________________________________________________________________________________ */
 
-            return (
-              <div className="App">
-                <div className="calculator">
-                  <div className="display">
-                    {display} {/*стартовый ноль на экране */}
-                  </div>
+  return (
+    <div className="App">
+      <div className="calculator">
+        <div className="display">
+          {display} {/*стартовый ноль на экране */}
+        </div>
 
-                  <div className="operators">
-                    <button onClick={() => handleOperatorClick("/")}>/</button>
-                    <button onClick={() => handleOperatorClick("*")}>*</button>
-                    <button onClick={() => handleOperatorClick("+")}>+</button>
-                    <button onClick={() => handleOperatorClick("-")}>-</button>
-                    {/* <button> DEL </button> */}
-                  </div>
+        <div className="operators">
+          <button onClick={() => handleOperatorClick("/")}>/</button>
+          <button onClick={() => handleOperatorClick("*")}>*</button>
+          <button onClick={() => handleOperatorClick("+")}>+</button>
+          <button onClick={() => handleOperatorClick("-")}>-</button>
+          {/* <button> DEL </button> */}
+        </div>
 
-                  <div className="digits">
-                    {createDigits()}
-                    <button onClick={() => handleNumberClick("0")}>0</button>
-                    <button onClick={() => handleNumberClick(".")}>.</button>
-                    <button onClick={() => handleEqualClick('=')}>=</button>
-                  </div>
-                </div>
-              </div>
-            );
-  }
-  export default App;
+        <div className="digits">
+          {createDigits()}
+          <button onClick={() => handleNumberClick("0")}>0</button>
+          <button onClick={() => handleNumberClick(".")}>.</button>
+          <button onClick={() => handleEqualClick("=")}>=</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+export default App;
 
 /*
 
@@ -291,8 +242,3 @@ function App() {
 где изменяем значение. 
 при изменении состояния компонента реакт понимает что произошли изменения
 и перерисовывет компонент */
-
-
-
-
-
